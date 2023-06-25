@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Inject} from '@angular/core';
 import { FormControl, FormGroup, Validators} from '@angular/forms';
-import { HttpClient} from "@angular/common/http";
-import { MatDialogRef} from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {User} from "../../../core/user";
 import {UserService} from "../../../core/user.service";
+import {EventEmitter} from "@angular/core";
 
 @Component({
   selector: 'app-form',
@@ -11,17 +11,20 @@ import {UserService} from "../../../core/user.service";
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit{
-  public allUsers: any;
+  @Output() formSubmitted: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   constructor(
     private userService: UserService,
-    private dialogRef: MatDialogRef<FormComponent>
+    private dialogRef: MatDialogRef<FormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { user: User },
   ) {
   }
   public ngOnInit(): void {
-    this.getAllUsers();
+
 
   }
   public form: FormGroup = new FormGroup ( {
+    id: new FormControl(''),
     gender: new FormControl('', [Validators.required]),
     firstName: new FormControl('', [Validators.required,  this.validateFormat]),
     lastName: new FormControl('', [Validators.required,  this.validateFormat]),
@@ -34,16 +37,7 @@ export class FormComponent implements OnInit{
     }
     return null;
   }
-  getAllUsers() {
-    this.userService.getAllUsers().subscribe(
-      users => {
-        this.allUsers = users;
-      },
-      error => {
-        console.log('Error occurred while fetching users:', error);
-      }
-    );
-  }
+
 
 
   submitForm() {
@@ -58,13 +52,12 @@ export class FormComponent implements OnInit{
         .subscribe(response => {
           console.log('User created successfully:', response);
           // this.form.reset();
-          this.getAllUsers(); // Refresh the table data after creating a new user
+          this.formSubmitted.emit(true); // Emit the formSubmitted event with success flag
         }, error => {
           console.log('Error occurred while creating user:', error);
         });
     }
   }
-
   closeForm() {
     this.dialogRef.close();
   }

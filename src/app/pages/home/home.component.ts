@@ -1,10 +1,10 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from "./form/form.component";
 import { HttpClient } from "@angular/common/http";
 import {User} from "../../core/user";
 import {UserService} from "../../core/user.service";
+import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 
 
 
@@ -15,7 +15,7 @@ import {UserService} from "../../core/user.service";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  allUsers: any
+  allUsers: User[] = []
   displayedColumns: string[] = [
     'gender',
     'firstName',
@@ -25,19 +25,28 @@ export class HomeComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
-    public userService: UserService
+    public userService: UserService,
+    private snackBar: MatSnackBar
   ) {}
-
   updateUser(id: number) {
+    const user = this.allUsers.find(user => user.id === id);
+
     const dialogRef: MatDialogRef<FormComponent> = this.dialog.open(FormComponent, {
       width: '800px',
       height: '600px',
-      data: { userId: id } // Pass the user ID as data to the dialog
+      data: { user: user } // Pass the user object as data to the dialog
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.userService.updateUser(result.userId, result.formValue).subscribe(() => {
+        const updatedUser: User = {
+          id: id,
+          firstName: result.formValue.firstName,
+          lastName: result.formValue.lastName,
+          gender: result.formValue.gender
+        };
+
+        this.userService.updateUser(id, updatedUser).subscribe(() => {
           this.getAllUsers(); // Refresh the table data after updating the user
         }, error => {
           console.log('Error occurred while updating user:', error);
@@ -50,7 +59,6 @@ export class HomeComponent implements OnInit {
       .subscribe(
         () => {
           console.log('User deleted successfully');
-          // Implement any additional logic after deleting the user
         },
         error => {
           console.log('Error occurred while deleting user:', error);
@@ -64,10 +72,23 @@ export class HomeComponent implements OnInit {
       height: '600px'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+    dialogRef.componentInstance.formSubmitted.subscribe((success: boolean) => {
+      if (success) {
+        dialogRef.close();
         this.getAllUsers();
+
+        const config: MatSnackBarConfig = {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 5000,
+          panelClass: ['mat-toolbar', 'mat-primary']
+        };
+
+        this.snackBar.open('მომხმარებელი წარმატებით დაემატა!', 'დახურვა', config); // Show success message at the top
       }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
     });
   }
 

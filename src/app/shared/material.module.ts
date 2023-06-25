@@ -38,6 +38,7 @@ import { MatCardModule } from '@angular/material/card';
     MatProgressBarModule,
     MatCheckboxModule,
     MatCardModule,
+
   ],
 })
 export class MaterialModule {}
