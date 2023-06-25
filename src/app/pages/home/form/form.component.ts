@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators} from '@angular/forms';
 import { HttpClient} from "@angular/common/http";
 import { MatDialogRef} from "@angular/material/dialog";
 import {User} from "../../../core/user";
+import {UserService} from "../../../core/user.service";
 
 @Component({
   selector: 'app-form',
@@ -12,7 +13,7 @@ import {User} from "../../../core/user";
 export class FormComponent implements OnInit{
   public allUsers: any;
   constructor(
-    private http: HttpClient,
+    private userService: UserService,
     private dialogRef: MatDialogRef<FormComponent>
   ) {
   }
@@ -34,24 +35,26 @@ export class FormComponent implements OnInit{
     return null;
   }
   getAllUsers() {
-    this.http.get<any[]>('https://crudcrud.com/api/ac1eae2d15bd4f03b9dd0cfa36c6ff0b/unicorns')
-      .subscribe(users => {
+    this.userService.getAllUsers().subscribe(
+      users => {
         this.allUsers = users;
-      }, error => {
+      },
+      error => {
         console.log('Error occurred while fetching users:', error);
-      });
+      }
+    );
   }
 
 
   submitForm() {
     if (this.form.valid) {
-      const user = {
+      const user: User = {
         firstName: this.form.value.firstName,
         lastName: this.form.value.lastName,
         gender: this.form.value.gender
       };
 
-      this.http.post('https://crudcrud.com/api/ac1eae2d15bd4f03b9dd0cfa36c6ff0b/unicorns', user)
+      this.userService.createUser(user)
         .subscribe(response => {
           console.log('User created successfully:', response);
           // this.form.reset();

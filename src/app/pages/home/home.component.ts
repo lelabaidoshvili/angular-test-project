@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dial
 import { FormComponent } from "./form/form.component";
 import { HttpClient } from "@angular/common/http";
 import {User} from "../../core/user";
+import {UserService} from "../../core/user.service";
 
 
 
@@ -14,7 +15,7 @@ import {User} from "../../core/user";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  allUsers: any;
+  allUsers: any
   displayedColumns: string[] = [
     'gender',
     'firstName',
@@ -23,25 +24,40 @@ export class HomeComponent implements OnInit {
   ];
   constructor(
     public dialog: MatDialog,
-    private http: HttpClient
+    private http: HttpClient,
+    public userService: UserService
   ) {}
 
   updateUser(id: number) {
-    // Implement the logic to update a user
-  }
+    const dialogRef: MatDialogRef<FormComponent> = this.dialog.open(FormComponent, {
+      width: '800px',
+      height: '600px',
+      data: { userId: id } // Pass the user ID as data to the dialog
+    });
 
-  deleteUser(id: number) {
-    const confirmed = confirm('Are you sure you want to delete this user?');
-    if (confirmed) {
-      this.http.delete(`https://crudcrud.com/api/ac1eae2d15bd4f03b9dd0cfa36c6ff0b/unicorns/${id}`)
-        .subscribe(() => {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.updateUser(result.userId, result.formValue).subscribe(() => {
+          this.getAllUsers(); // Refresh the table data after updating the user
+        }, error => {
+          console.log('Error occurred while updating user:', error);
+        });
+      }
+    });
+  }
+  deleteUser(id: number): void {
+    this.userService.deleteUser(id)
+      .subscribe(
+        () => {
           console.log('User deleted successfully');
           // Implement any additional logic after deleting the user
-        }, error => {
+        },
+        error => {
           console.log('Error occurred while deleting user:', error);
-        });
-    }
+        }
+      );
   }
+
   addUsers() {
     const dialogRef: MatDialogRef<FormComponent> = this.dialog.open(FormComponent, {
       width: '800px',
@@ -56,12 +72,14 @@ export class HomeComponent implements OnInit {
   }
 
   getAllUsers() {
-    this.http.get<User[]>('https://crudcrud.com/api/ac1eae2d15bd4f03b9dd0cfa36c6ff0b/unicorns')
-      .subscribe(users => {
+    this.userService.getAllUsers().subscribe(
+      users => {
         this.allUsers = users;
-      }, error => {
+      },
+      error => {
         console.log('Error occurred while fetching users:', error);
-      });
+      }
+    );
   }
 
   ngOnInit() {
