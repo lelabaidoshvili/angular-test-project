@@ -1,1 +1,38 @@
-<p>form works!</p>
+<div class="container">
+  <button mat-icon-button class="close-button" (click)="closeForm()">
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2>პიროვნების დამატება</h2>
+
+  <form [formGroup]="form">
+    <div>
+      <mat-form-field>
+        <mat-label>აირჩიეთ სქესი</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option value="male">Male</mat-option>
+          <mat-option value="female">Female</mat-option>
+          <mat-option value="other">Other</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label> ჩაწერეთ სახელი</mat-label>
+        <input matInput type="text" formControlName="firstName">
+        <mat-error *ngIf="form.get('firstName')?.hasError('invalidFormat')">ფორმატი არასწორია</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>ჩაწერეთ გვარი</mat-label>
+        <input matInput type="text" formControlName="lastName">
+        <mat-error *ngIf="form.get('lastName')?.hasError('invalidFormat')">ფორმატი არასწორია</mat-error>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="submitForm()" [disabled]="!form.valid">შენახვა</button>
+  </form>
+</div>
+
