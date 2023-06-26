@@ -28,44 +28,42 @@ export class HomeComponent implements OnInit {
     public userService: UserService,
     private snackBar: MatSnackBar
   ) {}
-  updateUser(id: number) {
-    const user = this.allUsers.find(user => user.id === id);
+  updateUser(user: User) {
 
-    const dialogRef: MatDialogRef<FormComponent> = this.dialog.open(FormComponent, {
-      width: '800px',
-      height: '600px',
-      data: { user: user } // Pass the user object as data to the dialog
-    });
+    if (user) {
+      const dialogRef: MatDialogRef<FormComponent> = this.dialog.open(FormComponent, {
+        width: '800px',
+        height: '600px',
+        data: { user: user, method: 'update' }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const updatedUser: User = {
-          id: id,
-          firstName: result.formValue.firstName,
-          lastName: result.formValue.lastName,
-          gender: result.formValue.gender
-        };
+      dialogRef.componentInstance.formSubmitted.subscribe((success: boolean) => {
+        if (success) {
+          dialogRef.close();
+          this.getAllUsers();
 
-        this.userService.updateUser(id, updatedUser).subscribe(() => {
-          this.getAllUsers(); // Refresh the table data after updating the user
-        }, error => {
-          console.log('Error occurred while updating user:', error);
-        });
-      }
-    });
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        this.getAllUsers();
+      });
+    }
   }
-  deleteUser(id: number): void {
-    this.userService.deleteUser(id)
+
+  deleteUser(_id: string): void {
+    this.userService.deleteUser(_id)
       .subscribe(
         () => {
           console.log('User deleted successfully');
+          this.getAllUsers();
         },
         error => {
-          console.log('Error occurred while deleting user:', error);
+          console.log(error);
         }
+
       );
   }
-
   addUsers() {
     const dialogRef: MatDialogRef<FormComponent> = this.dialog.open(FormComponent, {
       width: '800px',
@@ -98,7 +96,7 @@ export class HomeComponent implements OnInit {
         this.allUsers = users;
       },
       error => {
-        console.log('Error occurred while fetching users:', error);
+        console.log(error);
       }
     );
   }

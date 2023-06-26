@@ -23,6 +23,7 @@
         </th>
         <td mat-cell *matCellDef="let user" class="centered-header-cell">
           {{ user.firstName }}
+          {{user.id}}
         </td>
       </ng-container>
 
@@ -44,14 +45,13 @@
           <button
             class="mat-primary"
             mat-raised-button
-            (click)="updateUser(user.id)">
-            {{user.id}}
+            (click)="updateUser(user)">
             რედაქტირება
           </button>
           <button
             class="mat-accent"
             mat-raised-button
-            (click)="deleteUser(user.id)">
+            (click)="deleteUser(user._id)">
             წაშლა
           </button>
         </td>

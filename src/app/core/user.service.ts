@@ -8,19 +8,19 @@ import { User} from "./user";
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'https://crudcrud.com/api/e2a43fd0fe2941e88a2e837b98e5e769';
+  private apiUrl = 'https://crudcrud.com/api/08b616c2ab25454e8452cbcefc7d0c4d';
   constructor(private http: HttpClient) { }
 
   createUser(user: User) {
-    return this.http.post('https://crudcrud.com/api/e2a43fd0fe2941e88a2e837b98e5e769/users', user);
+    return this.http.post(`${this.apiUrl}/users`, user);
   }
 
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
 
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`https://crudcrud.com/api/e2a43fd0fe2941e88a2e837b98e5e769/users/${id}`)
+  deleteUser(_id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/users/${_id}`)
       .pipe(
         tap(() => console.log('User deleted successfully')),
         catchError(error => {
@@ -29,7 +29,8 @@ export class UserService {
         })
       );
   }
-  updateUser(id: number, updatedUser: User) {
-    return this.http.put(`https://crudcrud.com/api/e2a43fd0fe2941e88a2e837b98e5e769/users/${id}`, updatedUser);
+
+  updateUser(_id: string, updatedUser: User) {
+    return this.http.put(`${this.apiUrl}/users/${_id}`, updatedUser);
   }
 }
