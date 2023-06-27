@@ -1,53 +1,55 @@
 <div class="container">
-  <div class="wrapper">
     <div class="header">
+      <br>
+      <br>
       <h2 class="fw-normal">ცხრილი</h2>
-      <button class="mat-primary"mat-raised-button (click)="addUsers()">დამატება</button>
+      <br>
     </div>
     <table
       mat-table
       [dataSource]="allUsers"
       class="mat-elevation-z8 user-table">
       <ng-container matColumnDef="gender">
-        <th mat-header-cell *matHeaderCellDef class="centered-header-cell">
+        <th mat-header-cell *matHeaderCellDef >
           სქესი
         </th>
-        <td mat-cell *matCellDef="let user" class="centered-header-cell">
+        <td mat-cell *matCellDef="let user" >
           {{ user.gender }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="firstName">
-        <th mat-header-cell *matHeaderCellDef class="centered-header-cell">
+        <th mat-header-cell *matHeaderCellDef >
           სახელი
         </th>
-        <td mat-cell *matCellDef="let user" class="centered-header-cell">
+        <td mat-cell *matCellDef="let user" >
           {{ user.firstName }}
           {{user.id}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="lastName">
-        <th mat-header-cell *matHeaderCellDef class="centered-header-cell">
+        <th mat-header-cell *matHeaderCellDef >
           გვარი
         </th>
-        <td mat-cell *matCellDef="let user" class="centered-header-cell">
+        <td mat-cell *matCellDef="let user" >
           {{ user.lastName }}
         </td>
         <td mat-cell *matCellDef="let user"></td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="centered-header-cell">
+        <th mat-header-cell *matHeaderCellDef >
           #
         </th>
-        <td mat-cell *matCellDef="let user" class="centered-header-cell">
+        <td mat-cell *matCellDef="let user" >
           <button
             class="mat-primary"
             mat-raised-button
-            (click)="updateUser(user)">
+            (click)="updateUser(user, userMethod.UPDATE)">
             რედაქტირება
           </button>
+          &nbsp;&nbsp;
           <button
             class="mat-accent"
             mat-raised-button
@@ -60,6 +62,8 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    <br>
+    <button class="mat-primary"mat-raised-button (click)="updateUser(null, userMethod.CREATE)">დამატება</button>
   </div>
-</div>
+
 
