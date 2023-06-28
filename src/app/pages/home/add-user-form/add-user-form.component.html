@@ -9,8 +9,8 @@
       <mat-form-field>
         <mat-label>აირჩიეთ სქესი</mat-label>
         <mat-select formControlName="gender">
-          <mat-option value="male">მამრობითი</mat-option>
-          <mat-option value="female">მდედრობითი</mat-option>
+          <mat-option [value]="'male'">მამრობითი</mat-option>
+          <mat-option [value]="'female'">მდედრობითი</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

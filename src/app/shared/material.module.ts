@@ -9,7 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import {MatIconModule} from "@angular/material/icon";
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   exports: [

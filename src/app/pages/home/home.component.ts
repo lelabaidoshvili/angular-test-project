@@ -1,23 +1,21 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {AddUserFormComponent} from "./add-user-form/add-user-form.component";
-import {HttpClient} from "@angular/common/http";
-import {User} from "../../core/interface/user";
-import {UserService} from "../../core/service/user.service";
-import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
-export enum userMethod {
-  UPDATE = 'Update',
-  CREATE = 'Create',
-}
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
+import { User } from '@core/models/user';
+import { UserService } from '@core/services/user.service';
+import { UserChangeMethod } from '@core/enums/userChangeMethod';
+import { AddUserFormComponent } from './add-user-form/add-user-form.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent implements OnInit {
   allUsers: User[] = [];
-  userMethod = userMethod;
+  UserChangeMethod = UserChangeMethod;
 
   displayedColumns: string[] = [
     'gender',
@@ -34,15 +32,14 @@ export class HomeComponent implements OnInit {
   ) {
   }
 
-  public updateUser(user: User | null, method: userMethod) {
+  public updateUser(user: User | null, method: UserChangeMethod) {
     const dialogRef: MatDialogRef<AddUserFormComponent> = this.dialog.open(AddUserFormComponent, {
       width: '800px',
       height: '600px',
-      data: {user: user, method}
+      data: { user: user, method }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      dialogRef.close();
       this.getAllUsers();
     });
   }
